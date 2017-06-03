@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 using RawRabbit;
 using RawRabbit.vNext;
 using Warsztaty.API.Framework;
+using Warsztaty.API.Handlers;
+using Warsztaty.Messages.Commands;
+using Warsztaty.Messages.Events;
 
 namespace Warsztaty.API
 {
@@ -37,6 +40,8 @@ namespace Warsztaty.API
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            ConfigureHandlers(app);
+
             app.UseMvc();
         }
 
@@ -49,6 +54,19 @@ namespace Warsztaty.API
 
             var client = BusClientFactory.CreateDefault(options);
             services.AddSingleton<IBusClient>(client);
+            services.AddScoped<IEventHandler<RecordCreated>, RecordCreatedHandler>();
+            services.AddScoped<IEventHandler<RecordCreationFailed>, RecordCreationFailedHandler>();
+        }
+
+        private void ConfigureHandlers(IApplicationBuilder app)
+        {
+            var client = app.ApplicationServices.GetService<IBusClient>();
+
+            client.SubscribeAsync<RecordCreated>(
+                (msg, ctx) => app.ApplicationServices.GetService<IEventHandler<RecordCreated>>().HandleAsync(msg));
+
+            client.SubscribeAsync<RecordCreationFailed>(
+                (msg, ctx) => app.ApplicationServices.GetService<IEventHandler<RecordCreationFailed>>().HandleAsync(msg));
         }
     }
 }
