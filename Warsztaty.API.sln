@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warsztaty.API", "Warsztaty.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warsztaty.Service", "Warsztaty.Service\Warsztaty.Service.csproj", "{B5D91AA5-BDDB-4C9B-9E2E-1764A9B90AEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warsztaty.Classlib", "Warsztaty.Classlib\Warsztaty.Classlib.csproj", "{50891B85-3D6E-4DD4-9C44-C99FCB70C384}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warsztaty.Messages", "Warsztaty.Classlib\Warsztaty.Messages.csproj", "{50891B85-3D6E-4DD4-9C44-C99FCB70C384}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
