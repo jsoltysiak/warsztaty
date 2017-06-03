@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RawRabbit;
 using RawRabbit.vNext;
 using Warsztaty.API.Framework;
 
@@ -47,7 +48,7 @@ namespace Warsztaty.API
             services.Configure<RabbitMqOptions>(section);
 
             var client = BusClientFactory.CreateDefault(options);
-            services.AddSingleton(client);
+            services.AddSingleton<IBusClient>(client);
         }
     }
 }
