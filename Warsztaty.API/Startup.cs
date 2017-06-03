@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RawRabbit.vNext;
+using Warsztaty.API.Framework;
 
 namespace Warsztaty.API
 {
@@ -16,8 +14,8 @@ namespace Warsztaty.API
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -29,6 +27,7 @@ namespace Warsztaty.API
         {
             // Add framework services.
             services.AddMvc();
+            ConfigureRabbitMq(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +37,17 @@ namespace Warsztaty.API
             loggerFactory.AddDebug();
 
             app.UseMvc();
+        }
+
+        private void ConfigureRabbitMq(IServiceCollection services)
+        {
+            var options = new RabbitMqOptions();
+            var section = Configuration.GetSection("rabbitmq");
+            section.Bind(options);
+            services.Configure<RabbitMqOptions>(section);
+
+            var client = BusClientFactory.CreateDefault(options);
+            services.AddSingleton(client);
         }
     }
 }
